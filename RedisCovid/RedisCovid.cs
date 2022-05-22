@@ -37,12 +37,12 @@ namespace RedisCovid
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hwnd, int wmsg, int wparam, int lparam);
 
-
-        private void Panel_MouseDown(object sender, MouseEventArgs e)
+        private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
+
         #endregion
 
         public bool IsConnected() { return connectionStatus; }
@@ -50,13 +50,13 @@ namespace RedisCovid
         public bool ConnectionIsNotNull() {  return _redisDB != null; }
         private void Form1_Load(object sender, EventArgs e)
         {
-            lblConnectionStatus.Text = "Desconectado";
+            lblConnectionStatus.Text = "Desconectado de Redis";
             lblConnectionStatus.ForeColor = Color.Red;
             _redisDB = Redis.Connection.GetDatabase();
       
             if(_redisDB != null)
             {
-                lblConnectionStatus.Text = "Conectado!";
+                lblConnectionStatus.Text = "Conexión a Redis: OK";
                 lblConnectionStatus.ForeColor = Color.Green;
                 SetConnectionStatus(true);
             }
@@ -68,19 +68,6 @@ namespace RedisCovid
 
         private void btnPutTaburete_Click(object sender, EventArgs e)
         {
-            if(IsConnected())
-            {
-                if (PutString(textBox1.Text, textBox2.Text))
-                {
-                    lblResultMessage.Text = "Se han insertado los datos correctamente.";
-                    textBox1.Text = "";
-                    textBox2.Text = "";
-                }
-            }
-            else
-            {
-                MessageBox.Show("No se pudo realizar la conexión.", "Error");
-            }
         }
 
         public bool PutString(string key, string value)
@@ -107,72 +94,105 @@ namespace RedisCovid
         {
             await Task.Run(() =>
             {
-                DateTime date = new DateTime(2020, 01, 01);
-                DateTime endDate = new DateTime(2022, 05, 22);
-                int fileCounter = 0, filesParsed = 0;
-                WebClient webClient = new WebClient();
-
-                if (!Directory.Exists(PATH + @"\CovidJSONFiles"))
+                if(connectionStatus)
                 {
-                    Directory.CreateDirectory(PATH + @"\CovidJSONFiles");
-                }
+                    DateTime date = new DateTime(2020, 01, 01);
+                    DateTime endDate = new DateTime(2022, 05, 22);
+                    int fileCounter = 0, filesParsed = 0;
+                    WebClient webClient = new WebClient();
 
-
-                while (date <= endDate)
-                {    
-                    if (!File.Exists(PATH + @"\CovidJSONFiles\" + date.ToString("yyyy-MM-dd") + ".json"))
+                    if (!Directory.Exists(PATH + @"\CovidJSONFiles"))
                     {
-
-                        try
-                        {
-                            webClient.DownloadFile("https://api.covid19tracking.narrativa.com/api/" + date.ToString("yyyy-MM-dd") + "/country/spain", PATH + @"\Extremadura\" + date.ToString("yyyy-MM-dd") + ".json");
-                            fileCounter++;
-                           
-
-                            //Console.WriteLine("File: " + date.ToString("yyyy-MM-dd") + ".json downloaded");
-                        }
-                        catch { }
+                        Directory.CreateDirectory(PATH + @"\CovidJSONFiles");
                     }
-                    else
+
+                    Invoke(new MethodInvoker(() =>
                     {
+                        prBarParse.Visible = true;
+                        lblProgessBar.Visible = true;
+                        lblTotalParsedFiles.Visible = false;
+                    }));
 
-                        //Console.WriteLine("File: " + date.ToString("yyyy-MM-dd") + ".json  already downloaded");
-                    }
-                    date = date.AddDays(1);
-                }
-
-                //Console.WriteLine(fileCounter + " files downloaded!");
-
-                Root? root;
-
-                foreach (var file in Directory.GetFiles(PATH + @"\CovidJSONFiles"))
-                {
-                    if (new System.IO.FileInfo(file).Length > 0)
-                    {    
-                        string json = File.ReadAllText(file);
-                        CorrectCovidJson(GetDateFromJsonCovid(json), ref json);
-                        try
+                    while (date <= endDate)
+                    {
+                        if (!File.Exists(PATH + @"\CovidJSONFiles\" + date.ToString("yyyy-MM-dd") + ".json"))
                         {
-                            root = JsonConvert.DeserializeObject<Root>(json);
 
-                            if(root != null)
+                            try
                             {
-                                foreach (var r in root.Dates.TheCovid19.Countries.Spain.Regions)
-                                {
-
-                                }
-                                filesParsed++;
-                                //Console.WriteLine(file + " parsed!");
+                                webClient.DownloadFile("https://api.covid19tracking.narrativa.com/api/" + date.ToString("yyyy-MM-dd") + "/country/spain", PATH + @"\Extremadura\" + date.ToString("yyyy-MM-dd") + ".json");
+                                fileCounter++;
+                                //Console.WriteLine("File: " + date.ToString("yyyy-MM-dd") + ".json downloaded");
                             }
+                            catch { }
                         }
-                        catch { /*Console.WriteLine(file + " could not be parsed");*/ }
+                        else
+                        {
+
+                            //Console.WriteLine("File: " + date.ToString("yyyy-MM-dd") + ".json  already downloaded");
+                        }
+                        date = date.AddDays(1);
                     }
+
+                    //Console.WriteLine(fileCounter + " files downloaded!");
+
+                    Root? root;
+                    Hash hash = null!;
+                    string currentDate;
+                    string[] files = Directory.GetFiles(PATH + @"\CovidJSONFiles");
+                    int totalFiles = files.Length;
+
+                    Invoke(new MethodInvoker(() =>
+                    {
+                        prBarParse.Maximum = totalFiles;
+                        prBarParse.Value = 0;
+                    }));
+                    foreach (var file in files)
+                    {
+                        hash = new Hash();
+                        if (new System.IO.FileInfo(file).Length > 0)
+                        {
+                            string json = File.ReadAllText(file);
+                            currentDate = GetDateFromJsonCovid(json);
+                            CorrectCovidJson(currentDate, ref json);
+                            try
+                            {
+                                root = JsonConvert.DeserializeObject<Root>(json);
+                                hash.SetHashName(currentDate);
+                                if (root != null)
+                                {
+                                    foreach (var r in root.Dates.TheCovid19.Countries.Spain.Regions)
+                                    {
+                                        hash.AddEntry(r.Name, JsonConvert.SerializeObject(r));
+
+                                    }
+                                    hash.AddEntry("Total", JsonConvert.SerializeObject(root.Total));
+                                    filesParsed++;
+                                }
+                            }
+                            catch { /*Console.WriteLine(file + " could not be parsed");*/ }
+                        }
+                        else
+                        {
+                            totalFiles--;
+                        }
+                        PutHashEntries(hash.GetHashName(), hash.GetFields().ToArray());
+                        Invoke(new MethodInvoker(() =>
+                        {
+                            prBarParse.Value += 1;
+                            lblProgessBar.Text = ((filesParsed * 100) / totalFiles) + "%";
+                        }));
+                    }
+
+                    Invoke(new MethodInvoker(() =>
+                    {
+                        lblTotalParsedFiles.Text = filesParsed.ToString() + " ARCHIVOS PARSEADOS";
+                        prBarParse.Visible = false;
+                        lblProgessBar.Text = "0%";
+                        lblProgessBar.Visible = false;
+                        lblTotalParsedFiles.Visible = true;
+                    }));
                 }
-                Invoke(new MethodInvoker(() =>
-                {
-                    lblConnectionStatus.Text = filesParsed.ToString();
-                }));
-                //Console.WriteLine(filesParsed + " files parsed!");
             });
         }
 
@@ -229,7 +249,25 @@ namespace RedisCovid
             {
                 return _redisDB.HashExists(hashName, hashField.Name);
             }
-            //else
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Borra un campo de un hash a partir del nombre del campo que se desea borrar.
+        /// </summary>
+        /// <param name="hashName">Nombre del hash.</param>
+        /// <param name="fieldName">Nombre del campo a borrar.</param>
+        /// <returns>True si lo ha borrado, false en caso contrario.</returns>
+        public bool DeleteHashField(string hashName, string fieldName)
+        {
+            if(_redisDB != null)
+            {
+                return _redisDB.HashDelete(hashName, fieldName);
+            }
+            else
             {
                 return false;
             }
@@ -238,6 +276,7 @@ namespace RedisCovid
 
         public RedisValue GetString(string key)
         {
+            
             if (_redisDB != null)
             {
                 return _redisDB.StringGet(key);
@@ -250,12 +289,9 @@ namespace RedisCovid
 
         private void btnObtenerTaburete_Click(object sender, EventArgs e)
         {
-            if (IsConnected())
+            if (IsConnected() && textBox1.Text != "")
             {
-                var valor = GetString(textBox1.Text);
-
-                labelResult.Text = RedisValue.Unbox(valor).ToString();
-                    
+                labelResult.Text = GetHashEntry(textBox1.Text, "Total").ToString();
             }
             else
             {
@@ -358,25 +394,26 @@ namespace RedisCovid
                     string comunidad;
                     switch(colorRGB)
                     {
-                        case "R: 212, G: 60, B: 192": { comunidad = "Galicia";} break;
-                        case "R: 0, G: 181, B: 205": { comunidad = "Asturias"; } break;
-                        case "R: 222, G: 61, B: 87": { comunidad = "Cantabria"; } break;
-                        case "R: 131, G: 1, B: 225": { comunidad = "País Vasco"; } break;
-                        case "R: 111, G: 177, B: 121": { comunidad = "Navarra"; } break;
-                        case "R: 0, G: 24, B: 255": { comunidad = "La Rioja"; } break;
+                        case "R: 245, G: 57, B: 197": { comunidad = "Galicia";} break;
+                        case "R: 0, G: 182, B: 207": { comunidad = "Asturias"; } break;
+                        case "R: 255, G: 59, B: 87": { comunidad = "Cantabria"; } break;
+                        case "R: 154, G: 0, B: 230": { comunidad = "País Vasco"; } break;
+                        case "R: 61, G: 179, B: 119": { comunidad = "Navarra"; } break;
+                        case "R: 0, G: 17, B: 255": { comunidad = "La Rioja"; } break;
                         case "R: 255, G: 0, B: 0": { comunidad = "Aragón"; } break;
                         case "R: 0, G: 255, B: 0": { comunidad = "Cataluña"; } break;
-                        case "R: 251, G: 255, B: 0": { comunidad = "Comunidad Valenciana"; } break;
-                        case "R: 0, G: 44, B: 4": { comunidad = "Murcia"; } break;
-                        case "R: 116, G: 81, B: 4": { comunidad = "Andalucía"; } break;
-                        case "R: 81, G: 208, B: 180": { comunidad = "Extremadura"; } break;
-                        case "R: 255, G: 163, B: 0": { comunidad = "Castilla y León"; } break;
-                        case "R: 191, G: 130, B: 203": { comunidad = "Castilla-La Mancha"; } break;
-                        case "R: 52, G: 6, B: 0": { comunidad = "Madrid"; } break;
-                        case "R: 255, G: 141, B: 225": { comunidad = "Islas Baleares"; } break;
-                        case "R: 0, G: 222, B: 0": { comunidad = "Islas Canarias"; } break;
-                        case "R: 164, G: 55, B: 55": { comunidad = "Ceuta"; } break;
-                        case "R: 17, G: 132, B: 3": { comunidad = "Melilla"; } break;
+                        case "R: 250, G: 255, B: 0": { comunidad = "Comunidad Valenciana"; } break;
+                        case "R: 101, G: 101, B: 85": { comunidad = "Murcia"; } break;
+                        case "R: 128, G: 80, B: 0": { comunidad = "Andalucía"; } break;
+                        case "R: 0, G: 209, B: 180": { comunidad = "Extremadura"; } break;
+                        case "R: 255, G: 127, B: 39": { comunidad = "Castilla y León"; } break;
+                        case "R: 211, G: 131, B: 207": { comunidad = "Castilla-La Mancha"; } break;
+                        case "R: 4, G: 4, B: 4": { comunidad = "Madrid"; } break;
+                        case "R: 255, G: 142, B: 229": { comunidad = "Islas Baleares"; } break;
+                        case "R: 0, G: 223, B: 0": { comunidad = "Islas Canarias"; } break;
+                        case "R: 190, G: 52, B: 52": { comunidad = "Ceuta"; } break;
+                        case "R: 0, G: 133, B: 0": { comunidad = "Melilla"; } break;
+                        case "R: 255, G: 92, B: 123": { comunidad = "Total"; } break;
                         default: { comunidad = "???"; } break;
                     }
                     if(comunidad != "???")
@@ -385,6 +422,26 @@ namespace RedisCovid
                     }
                 }
             }
+        }
+
+        private void closeForm_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void minimizeForm_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+
+        private void lblConnectionStatus_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblProgessBar_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

@@ -63,6 +63,36 @@ namespace RedisCovid.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Close_Button {
+            get {
+                object obj = ResourceManager.GetObject("Close_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Covid_icon {
+            get {
+                object obj = ResourceManager.GetObject("Covid_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Covid_icon2 {
+            get {
+                object obj = ResourceManager.GetObject("Covid_icon2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap España {
             get {
                 object obj = ResourceManager.GetObject("España", resourceCulture);
@@ -76,6 +106,16 @@ namespace RedisCovid.Properties {
         internal static System.Drawing.Bitmap Extremadura {
             get {
                 object obj = ResourceManager.GetObject("Extremadura", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Minimize_Button {
+            get {
+                object obj = ResourceManager.GetObject("Minimize_Button", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
