@@ -120,13 +120,6 @@ namespace RedisCovid
                     DateTime date = new DateTime(2020, 01, 01);
                     DateTime endDate = new DateTime(today.Year, today.Month, today.Day);
                     int totalDays = (int)(endDate - date).TotalDays;
-
-                    /*Invoke(new MethodInvoker(() =>
-                    {
-                        lblConnectionStatus.Text = totalDays.ToString(); 
-                    }));*/
-
-
                     int fileCounter = 0, filesParsed = 0;
                     WebClient webClient = new WebClient();
 
@@ -155,10 +148,6 @@ namespace RedisCovid
                             }
                             catch {}
                         }
-                        else
-                        {
-                            //Console.WriteLine("File: " + date.ToString("yyyy-MM-dd") + ".json  already downloaded");
-                        }
                         date = date.AddDays(1);
                         fileCounter++;
 
@@ -167,7 +156,6 @@ namespace RedisCovid
                             lblProgessBar.Text = ((fileCounter * 100) / totalDays).ToString() + "%";
                             prBarParse.Value += 1;
                         }));
-
                     }
 
                     Root? root;
@@ -176,8 +164,7 @@ namespace RedisCovid
                     string[] files = Directory.GetFiles(PATH + @"\CovidJSONFiles");
                     int totalFiles = files.Length;
 
-                    Thread.Sleep(500);
-
+                    
                     Invoke(new MethodInvoker(() =>
                     {
                         btnParse.Text = "PARSEANDO...";
@@ -223,7 +210,7 @@ namespace RedisCovid
 
                     Invoke(new MethodInvoker(() =>
                     {
-                        lblTotalParsedFiles.Text = filesParsed.ToString() + " ARCHIVOS PARSEADOS";
+                        lblTotalParsedFiles.Text = filesParsed.ToString() + " ARCHIVOS IMPORTADOS";
                         prBarParse.Visible = false;
                         lblProgessBar.Text = "0%";
                         lblProgessBar.Visible = false;
@@ -275,8 +262,6 @@ namespace RedisCovid
             return _redisDB;
         }
 
-
-
         /// <summary>Busca si ya existe o no el campo de un hash dado.</summary>
         /// <param name="hashName">Nombre del hash.</param>
         /// <param name="hashField">Nombre del campo del hash.</param>
@@ -292,7 +277,6 @@ namespace RedisCovid
                 return false;
             }
         }
-
         /// <summary>
         /// Borra un campo de un hash a partir del nombre del campo que se desea borrar.
         /// </summary>
@@ -310,11 +294,8 @@ namespace RedisCovid
                 return false;
             }
         }
-
-
         public RedisValue GetString(string key)
-        {
-            
+        {            
             if (_redisDB != null)
             {
                 return _redisDB.StringGet(key);
@@ -324,7 +305,6 @@ namespace RedisCovid
                 return NO_DATA_FOUND;
             }
         }
-
         private void btnObtenerTaburete_Click(object sender, EventArgs e)
         {
            /* if (IsConnected() && textBox1.Text != "")
@@ -336,21 +316,17 @@ namespace RedisCovid
                 MessageBox.Show("No se pudo realizar la conexión.", "Error");
             }*/
         }
-
         private async void button1_Click(object sender, EventArgs e)
         {
             await Parseo();
         }
-
         private void Extremadura_MouseHover(object sender, EventArgs e)
         {
         }
-
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
         }
-
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -362,27 +338,22 @@ namespace RedisCovid
                 }
             }
         }
-
         private void pictureBox2_Click(object sender, EventArgs e)
         {
 
         }
-
         private void pictureBox2_MouseClick(object sender, MouseEventArgs e)
         {
             
         }
-
         private void pictureBox1_MouseClick_1(object sender, MouseEventArgs e)
         {
 
         }
-
         private async void pictureBox1_Click_1(object sender, EventArgs e)
         {
             await SeleccionarComunidad(e);
         }
-
         public async Task SeleccionarComunidad(EventArgs e)
         {
             await Task.Run(() =>
@@ -469,7 +440,6 @@ namespace RedisCovid
                 }
             });
         }
-
         public List<SubRegion> GetSubregions(Region region)
         {
             List<SubRegion> subRegions = new List<SubRegion>();
@@ -480,8 +450,6 @@ namespace RedisCovid
             }
             return subRegions;
         }
-        
-
         public async Task ShowResultsAsync()
         {
             await Task.Run(() =>
@@ -647,7 +615,6 @@ namespace RedisCovid
                 }
             });
         }
-
         public void ShowResults()
         {
             if (currentCommunity != "???")
@@ -810,37 +777,30 @@ namespace RedisCovid
                 }
             }
         }
-
         private void closeForm_Click(object sender, EventArgs e)
         {
             Application.Exit();
         }
-
         private void minimizeForm_Click(object sender, EventArgs e)
         {
             this.WindowState = FormWindowState.Minimized;
         }
-
         private void lblConnectionStatus_Click(object sender, EventArgs e)
         {
 
         }
-
         private void lblProgessBar_Click(object sender, EventArgs e)
         {
 
         }
-
         private void lblSelectedCommunity_Click(object sender, EventArgs e)
         {
 
         }
-
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
-
         private async void dateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
             string date = dTimeStart.Value.ToString("yyyy-MM-dd");
@@ -858,12 +818,10 @@ namespace RedisCovid
 
             await ShowResultsAsync();
         }
-
         private void lblTotalPositivos_Click(object sender, EventArgs e)
         {
 
         }
-
         private async void dTimeFin_ValueChanged(object sender, EventArgs e)
         {
             string date = dTimeFin.Value.ToString("yyyy-MM-dd");
@@ -881,7 +839,6 @@ namespace RedisCovid
 
             await ShowResultsAsync();
         }
-
         private async void chBoxRango_CheckedChanged(object sender, EventArgs e)
         {
             if(chBoxRango.Checked)
@@ -899,17 +856,14 @@ namespace RedisCovid
             }
             await ShowResultsAsync();
         }
-
         private void label9_Click(object sender, EventArgs e)
         {
 
         }
-
         private void label10_Click(object sender, EventArgs e)
         {
 
         }
-
         private void cBoxRango_Paint(object sender, PaintEventArgs e)
         {
 
