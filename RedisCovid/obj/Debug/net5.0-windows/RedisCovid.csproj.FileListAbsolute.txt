@@ -22,3 +22,4 @@ C:\Users\aoter\source\repos\RedisCovid\obj\Debug\net5.0-windows\RedisCovid.genru
 C:\Users\aoter\source\repos\RedisCovid\obj\Debug\net5.0-windows\ref\RedisCovid.dll
 C:\Users\aoter\source\repos\RedisCovid\obj\Debug\net5.0-windows\RedisCovid.Properties.Resources.resources
 C:\Users\aoter\source\repos\RedisCovid\bin\Debug\net5.0-windows\Newtonsoft.Json.dll
+C:\Users\aoter\source\repos\RedisCovid\obj\Debug\net5.0-windows\RedisCovid.Subregion.resources

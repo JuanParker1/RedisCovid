@@ -1,0 +1,9 @@
+C:\Users\aoter\Desktop\RedisCovid19\RedisCovid.exe
+C:\Users\aoter\Desktop\RedisCovid19\RedisCovid.dll
+C:\Users\aoter\Desktop\RedisCovid19\RedisCovid.deps.json
+C:\Users\aoter\Desktop\RedisCovid19\RedisCovid.runtimeconfig.json
+C:\Users\aoter\Desktop\RedisCovid19\RedisCovid.pdb
+C:\Users\aoter\Desktop\RedisCovid19\Newtonsoft.Json.dll
+C:\Users\aoter\Desktop\RedisCovid19\Pipelines.Sockets.Unofficial.dll
+C:\Users\aoter\Desktop\RedisCovid19\StackExchange.Redis.dll
+C:\Users\aoter\Desktop\RedisCovid19\System.IO.Pipelines.dll

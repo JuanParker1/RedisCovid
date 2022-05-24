@@ -124,16 +124,19 @@
   <data name="España" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\España.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Extremadura" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Extremadura.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Covid_icon2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\Covid_icon2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Minimize_Button" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Minimize_Button.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Extremadura" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Extremadura.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Covid_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Covid_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Covid_icon2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Images\Covid_icon2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CovidIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Images\CovidIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

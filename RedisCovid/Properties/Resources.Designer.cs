@@ -93,6 +93,16 @@ namespace RedisCovid.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CovidIcon {
+            get {
+                object obj = ResourceManager.GetObject("CovidIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap España {
             get {
                 object obj = ResourceManager.GetObject("España", resourceCulture);
